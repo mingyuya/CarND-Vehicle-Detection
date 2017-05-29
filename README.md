@@ -118,10 +118,12 @@ The followings are the results of detection for various scaling :
 #### Using `decision_function()` of LinearSVM
  `decision_function()` of LinearSVM returns the distance between an input feature and its hyperplane. The `find_car` function considers positive prediction with short distance to hyperplane (< 1.0) as false.  
 
+
 ### Bounding Positive Detections (Step 3-3 in `Vehicle_Detection.ipynb`)   
 From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. I then assumed each blob corresponded to a vehicle. I constructed bounding boxes to cover the area of each blob detected.  
 
-### Here is the output of my pipeline with their corresponding heatmap and labeled map :  
+
+#### Here is the output of my pipeline with their corresponding heatmap and labeled map :  
 
 ![alt text][output]
 ![alt text][label_map]
