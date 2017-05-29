@@ -12,6 +12,9 @@ Steps of this project are the following:
 * Implement a sliding-window technique and search for vehicles in a single image.
 * Build a pipeline for a video stream with rejecing and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
+* Video implementation
+
+#### All the steps are implemented in `Vehicle_Detection.ipynb`
 
 [//]: # (Image References)
 [ex_vehicles]: ./figures/car_images.jpg
@@ -34,7 +37,7 @@ Steps of this project are the following:
 
 ## Feature Extraction and Training Classifier
 
-### Reading images and labeling
+### Reading images (Step 1-1 in `Vehicle_Detection.ipynb`)
 The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here are some examples of `vehicle` and `non-vehicle` classes:  
@@ -52,7 +55,7 @@ Here is an example using the `YCrCb` color space and HOG parameters of `orientat
 ![alt text][hog_car]
 ![alt text][hog_notcar]
 
-### Choice of HOG parameters.
+### Choice of HOG parameters (Step 1-2 in `Vehicle_Detection.ipynb`)
 
 At first, I listed up some set of parameters like shown in the below table :  
 
@@ -78,8 +81,9 @@ I did more experiments with all datasets and YCrCb color space for fine-tunning 
  | spatial_sizes | (16, 16) |
  | hist_bins | 16 |
 
+---
 
-### Training classifiers using the selected HOG features
+## Training classifiers using the selected HOG features (Step 2 in `Vehicle_Detection.ipynb`)  
 
 I trained [linear SVM](http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html), [SVM with kernel='poly'](http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) and [Decision Trees](http://scikit-learn.org/stable/modules/tree.html) using the dataset comes from [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html) and [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/) and chosen parameters for feature extraction. In addition, all the features were scaled to zero mean and unit variance before training.
 
@@ -96,7 +100,7 @@ This result shows that **`Linear SVM` is 10,000 times faster than `SVM with kern
 
 ## Building a pipeline
 
-### Sliding Window Search
+### Sliding Window Search by sub-sampling (Step 3-1 in `Vehicle_Detection.ipynb`)  
 
 The function `find_car` divides an image into small cells having 8x8 pixels. The window which has 8x8 cells (=64x64 pixels) moves 2 cells at a time in an image with extracting features. Multi-scale window is implented by scaling an input image. This sub-sampling method operates faster than real sliding-window method.
 
@@ -110,41 +114,33 @@ The followings are the results of detection for various scaling :
 ![alt text][det_4]
 
 
-### Reducing false detections
+### Reducing false detections (Step 3-1 in `Vehicle_Detection.ipynb`)  
 #### Using `decision_function()` of LinearSVM
  `decision_function()` of LinearSVM returns the distance between an input feature and its hyperplane. The `find_car` function considers positive prediction with short distance to hyperplane (< 1.0) as false.  
- 
-Here is the output of my pipeline with their corresponding heatmap and labeled map :  
+
+### Bounding Positive Detections (Step 3-3 in `Vehicle_Detection.ipynb`)   
+From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. I then assumed each blob corresponded to a vehicle. I constructed bounding boxes to cover the area of each blob detected.  
+
+### Here is the output of my pipeline with their corresponding heatmap and labeled map :  
 
 ![alt text][output]
 ![alt text][label_map]
 
 ---
 
-### Video Implementation
+## Video Implementation
 
-#### Averaging last six `heatmap`s
+### Averaging last six `heatmap`s (Step 3-3 in `Vehicle_Detection.ipynb`)   
  `find_car` function stores the positions of positive detections - `heatmap` in each frame of the video in the buffer having the depth of 6. By using the buffer, I could take the mean of last six `heatmap`s and remove 
 
 Here's a [link to my video result](./result_project_video.mp4)
 
-### Here are six frames and their corresponding heatmaps:
-
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][label_map]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
 ---
 
-### Discussion
+## Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
-
-It was very hard to perfectly remove **false detection**. I guess the following approaches can make it more robust.  
+### To perfectly remove **false detection**.
+I guess the following approaches can make the pipeline more robust.  
 1) Gathering more labeled dataset from the false-detection cases
   Additional training dataset extracted from false-detection cases in the project video could increase the accuracy of classifier in this project.
 2) Trying to find optimal parameters for the classifier  
