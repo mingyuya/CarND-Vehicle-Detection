@@ -14,12 +14,16 @@ Steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
+[ex_vehicles]: ./figures/car_images.jpg
+[ex_non-vehicles]: ./examples/notcar_images.jpg
+[hog_car]: ./figures/hog_car.jpg
+[hog_notcar]: ./figures/hog_notcar.jpg
+[sliding_window]: ./figures/sliding_window.jpg
+[output]: ./figures/output.jpg
+[det_1]: ./figures/detection_scale_0p8.jpg
+[det_2]: ./figures/detection_scale_1p0.jpg
+[det_3]: ./figures/detection_scale_1p2.jpg
+[det_4]: ./figures/detection_scale_1p8.jpg
 [image7]: ./examples/output_bboxes.png
 [video1]: ./project_video.mp4
 
@@ -28,22 +32,27 @@ Steps of this project are the following:
 
 ---
 
-### Histogram of Oriented Gradients (HOG)
+## Feature Extraction and Training Classifier
 
+### Reading images and labeling
 The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
+I started by reading in all the `vehicle` and `non-vehicle` images.  Here are some examples of `vehicle` and `non-vehicle` classes:  
 
-![alt text][image1]
+Vehicles
+![alt text][ex_vehicles]
+
+Non-vehicles
+![alt_text][ex_non-vehicles]
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`). I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+Here is an example using the `YCrCb` color space and HOG parameters of `orientations=10`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 
 ![alt text][image2]
 
-#### Final choice of HOG parameters.
+### Choice of HOG parameters.
 
 At first, I listed up some set of parameters like shown in the below table :  
 
@@ -70,40 +79,48 @@ I did more experiments with all datasets and YCrCb color space for fine-tunning 
  | hist_bins | 16 |
 
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+### Training classifiers using the selected HOG features
 
-I trained [linear SVM](http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html), [SVM with kernel='poly'](http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) and [Decision Trees](http://scikit-learn.org/stable/modules/tree.html) using the dataset comes from [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html) and [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/)
+I trained [linear SVM](http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html), [SVM with kernel='poly'](http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) and [Decision Trees](http://scikit-learn.org/stable/modules/tree.html) using the dataset comes from [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html) and [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/) and chosen parameters for feature extraction. In addition, all the features were scaled to zero mean and unit variance before training.
 
+The following table is its result.  
  |  | Linear SVM | SVM(kernal='poly') | DecisionTree |
  | ------ | ----- | ----- | ----- |
  | Prediction Time (sec) | 0.00643 | 65.454 | 0.00997 |
  | Accuracy | 0.9848 | 0.9924 | 0.9398 |
  
-###Sliding Window Search
+This result shows that **`Linear SVM` is 10,000 times faster than `SVM with kernel='poly'` and has no sigficant difference in accuracy.** 
 
-####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+## Building a pipeline
 
-![alt text][image3]
+### Sliding Window Search
 
-####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+The function `find_car` divides an image into small cells having 8x8 pixels. The window which has 8x8 cells (=64x64 pixels) moves 2 cells at a time in an image with extracting features. Multi-scale window is implented by scaling an input image.
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+![alt text][sliding_window]
+
+Here is the output of my pipeline with sliding window :  
 
 ![alt text][image4]
 ---
 
+#### Reducing false detections
+##### Using `decision_function()` of LinearSVM
+ `decision_function()` of LinearSVM returns the distance between an input feature and its hyperplane. The `find_car` function considers positive prediction with short distance to hyperplane (< 1.0) as false.  
+ 
+##### Averaging last six `heatmap`s
+ `find_car` function stores the positions of positive detections - `heatmap` in each frame of the video in the buffer having the depth of 6. By using the buffer, I could take the mean of last six `heatmap`s and remove 
+
 ### Video Implementation
 
-Here's a [link to my video result](./project_video.mp4)
-
-
-####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+#### Reducing 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+
+Here's a [link to my video result](./result_project_video.mp4)
 
 ### Here are six frames and their corresponding heatmaps:
 
@@ -115,13 +132,14 @@ Here's an example result showing the heatmap from a series of frames of video, t
 ### Here the resulting bounding boxes are drawn onto the last frame in the series:
 ![alt text][image7]
 
-
-
 ---
 
-###Discussion
+### Discussion
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
-
+It was very hard to perfectly remove **false detection**. I guess the following approaches can make it more robust.  
+1) Gathering more labeled dataset from the false-detection cases
+  Additional training dataset extracted from false-detection cases in the project video could increase the accuracy of classifier in this project.
+2) Trying to find optimal parameters for the classifier  
+  I've just tunned the parameters for feature extraction. I think that the accuracy of the classifier can be improved by some efforts on tunning the parameters of classifier
