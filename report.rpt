@@ -1,0 +1,72 @@
+
+
+>> Rank  0  : config with  ['HLS', 7, 12, 2, 1, (8, 8), 14]  -> Accuracy :  0.9725
+>> Rank  1  : config with  ['HLS', 6, 12, 2, 1, (8, 8), 14]  -> Accuracy :  0.97
+>> Rank  2  : config with  ['HLS', 7, 12, 2, 1, (12, 12), 14]  -> Accuracy :  0.9675
+>> Rank  3  : config with  ['HLS', 7, 10, 2, 1, (12, 12), 16]  -> Accuracy :  0.965
+>> Rank  4  : config with  ['HLS', 6, 12, 2, 1, (10, 10), 12]  -> Accuracy :  0.9625
+>> Rank  5  : config with  ['HLS', 6, 8, 2, 1, (10, 10), 12]  -> Accuracy :  0.96
+>> Rank  6  : config with  ['HLS', 6, 10, 2, 1, (12, 12), 12]  -> Accuracy :  0.96
+>> Rank  7  : config with  ['HLS', 6, 12, 2, 1, (10, 10), 14]  -> Accuracy :  0.96
+>> Rank  8  : config with  ['HLS', 7, 12, 2, 1, (12, 12), 16]  -> Accuracy :  0.96
+>> Rank  9  : config with  ['HLS', 8, 12, 2, 1, (12, 12), 16]  -> Accuracy :  0.96
+
+
+>> Rank  0  : config with  ['HSV', 6, 12, 2, 2, (8, 8), 16]  -> Accuracy :  0.9775
+>> Rank  1  : config with  ['HSV', 6, 12, 2, 2, (8, 8), 14]  -> Accuracy :  0.9725
+>> Rank  2  : config with  ['HSV', 10, 12, 2, 2, (8, 8), 16]  -> Accuracy :  0.9675
+>> Rank  3  : config with  ['HSV', 7, 12, 2, 2, (8, 8), 12]  -> Accuracy :  0.965
+>> Rank  4  : config with  ['HSV', 7, 10, 2, 2, (8, 8), 16]  -> Accuracy :  0.965
+>> Rank  5  : config with  ['HSV', 6, 12, 2, 2, (8, 8), 12]  -> Accuracy :  0.9625
+>> Rank  6  : config with  ['HSV', 7, 10, 2, 2, (8, 8), 14]  -> Accuracy :  0.9625
+>> Rank  7  : config with  ['HSV', 7, 10, 2, 2, (12, 12), 16]  -> Accuracy :  0.9625
+>> Rank  8  : config with  ['HSV', 7, 12, 2, 2, (12, 12), 14]  -> Accuracy :  0.9625
+>> Rank  9  : config with  ['HSV', 6, 8, 2, 2, (12, 12), 16]  -> Accuracy :  0.96
+
+
+>> Rank  0  : config with  ['LUV', 6, 12, 2, 0, (12, 12), 12]  -> Accuracy :  0.9825
+>> Rank  1  : config with  ['LUV', 7, 12, 2, 0, (12, 12), 12]  -> Accuracy :  0.98
+>> Rank  2  : config with  ['LUV', 8, 12, 2, 0, (12, 12), 16]  -> Accuracy :  0.98
+>> Rank  3  : config with  ['LUV', 6, 10, 2, 0, (12, 12), 12]  -> Accuracy :  0.9775
+>> Rank  4  : config with  ['LUV', 6, 12, 2, 0, (12, 12), 14]  -> Accuracy :  0.9775
+>> Rank  5  : config with  ['LUV', 6, 12, 2, 0, (12, 12), 16]  -> Accuracy :  0.9775
+>> Rank  6  : config with  ['LUV', 6, 12, 2, 0, (10, 10), 12]  -> Accuracy :  0.975
+>> Rank  7  : config with  ['LUV', 7, 10, 2, 0, (10, 10), 14]  -> Accuracy :  0.975
+>> Rank  8  : config with  ['LUV', 8, 12, 2, 0, (12, 12), 12]  -> Accuracy :  0.975
+>> Rank  9  : config with  ['LUV', 8, 12, 2, 0, (12, 12), 14]  -> Accuracy :  0.975
+
+
+>> Rank  0  : config with  ['RGB', 7, 12, 2, 'ALL', (10, 10), 14]  -> Accuracy :  0.9725
+>> Rank  1  : config with  ['RGB', 6, 12, 2, 'ALL', (8, 8), 16]  -> Accuracy :  0.9625
+>> Rank  2  : config with  ['RGB', 7, 12, 2, 'ALL', (8, 8), 12]  -> Accuracy :  0.9625
+>> Rank  3  : config with  ['RGB', 6, 10, 2, 'ALL', (8, 8), 16]  -> Accuracy :  0.96
+>> Rank  4  : config with  ['RGB', 9, 12, 2, 'ALL', (10, 10), 14]  -> Accuracy :  0.96
+>> Rank  5  : config with  ['RGB', 7, 12, 2, 'ALL', (10, 10), 12]  -> Accuracy :  0.9575
+>> Rank  6  : config with  ['RGB', 7, 12, 2, 'ALL', (12, 12), 16]  -> Accuracy :  0.9575
+>> Rank  7  : config with  ['RGB', 11, 12, 2, 'ALL', (12, 12), 12]  -> Accuracy :  0.9575
+>> Rank  8  : config with  ['RGB', 7, 8, 2, 'ALL', (12, 12), 12]  -> Accuracy :  0.955
+>> Rank  9  : config with  ['RGB', 7, 10, 2, 'ALL', (10, 10), 12]  -> Accuracy :  0.955
+
+
+>> Rank  0  : config with  ['YCrCb', 6, 10, 2, 0, (12, 12), 16]  -> Accuracy :  0.985
+>> Rank  1  : config with  ['YCrCb', 8, 12, 2, 0, (10, 10), 12]  -> Accuracy :  0.985
+>> Rank  2  : config with  ['YCrCb', 6, 12, 2, 0, (10, 10), 14]  -> Accuracy :  0.9825
+>> Rank  3  : config with  ['YCrCb', 8, 12, 2, 0, (12, 12), 12]  -> Accuracy :  0.9825
+>> Rank  4  : config with  ['YCrCb', 6, 12, 2, 0, (12, 12), 16]  -> Accuracy :  0.98
+>> Rank  5  : config with  ['YCrCb', 7, 10, 2, 0, (12, 12), 14]  -> Accuracy :  0.98
+>> Rank  6  : config with  ['YCrCb', 8, 12, 2, 0, (12, 12), 16]  -> Accuracy :  0.98
+>> Rank  7  : config with  ['YCrCb', 6, 10, 2, 0, (8, 8), 16]  -> Accuracy :  0.975
+>> Rank  8  : config with  ['YCrCb', 6, 12, 2, 0, (10, 10), 12]  -> Accuracy :  0.975
+>> Rank  9  : config with  ['YCrCb', 6, 12, 2, 0, (10, 10), 16]  -> Accuracy :  0.975
+
+
+>> Rank  0  : config with  ['YUV', 8, 12, 2, 0, (12, 12), 12]  -> Accuracy :  0.9825
+>> Rank  1  : config with  ['YUV', 6, 12, 2, 0, (10, 10), 16]  -> Accuracy :  0.98
+>> Rank  2  : config with  ['YUV', 6, 10, 2, 0, (12, 12), 14]  -> Accuracy :  0.9775
+>> Rank  3  : config with  ['YUV', 6, 12, 2, 0, (8, 8), 12]  -> Accuracy :  0.9775
+>> Rank  4  : config with  ['YUV', 6, 12, 2, 0, (8, 8), 16]  -> Accuracy :  0.9775
+>> Rank  5  : config with  ['YUV', 6, 10, 2, 0, (10, 10), 16]  -> Accuracy :  0.975
+>> Rank  6  : config with  ['YUV', 6, 8, 2, 0, (12, 12), 14]  -> Accuracy :  0.9725
+>> Rank  7  : config with  ['YUV', 6, 10, 2, 0, (12, 12), 12]  -> Accuracy :  0.9725
+>> Rank  8  : config with  ['YUV', 8, 12, 2, 0, (12, 12), 14]  -> Accuracy :  0.9725
+>> Rank  9  : config with  ['YUV', 7, 12, 2, 0, (10, 10), 12]  -> Accuracy :  0.97
