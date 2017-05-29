@@ -4,13 +4,13 @@
 ### Matt, Min-gyu, Kim
 ---
 
-The goals / steps of this project are the following:
+Steps of this project are the following:  
 
-* Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier
-* Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector. 
-* Note: for those first two steps don't forget to normalize your features and randomize a selection for training and testing.
-* Implement a sliding-window technique and use your trained classifier to search for vehicles in images.
-* Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
+* Feature (Binned color, Color histogram, Histogram of Oriented Gradients (HOG)) extraction on a labeled training set of images
+* Optimize the parameters for feature (Binned color, Color histogram, Histogram of Oriented Gradients (HOG)) extraction
+* Train a classifier
+* Implement a sliding-window technique and search for vehicles in a single image.
+* Build a pipeline for a video stream with rejecing and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
@@ -24,18 +24,11 @@ The goals / steps of this project are the following:
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+#### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
 
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
-
-You're reading it!
-
-###Histogram of Oriented Gradients (HOG)
-
-####1. Explain how (and identify where in your code) you extracted HOG features from the training images.
+### Histogram of Oriented Gradients (HOG)
 
 The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
 
@@ -43,21 +36,49 @@ I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an 
 
 ![alt text][image1]
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`). I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
 Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 
 ![alt text][image2]
 
-####2. Explain how you settled on your final choice of HOG parameters.
+#### Final choice of HOG parameters.
 
-I tried various combinations of parameters and...
+At first, I listed up some set of parameters like shown in the below table :  
+
+ | Parameter | Candidates |
+ | ------ | ----- |
+ | color_space | 'RGB', 'HSV', 'LUV', 'HLS', 'YUV', 'YCrCb' |
+ | orient | 6, 7, 8, 9, 10 |
+ | pix_per_cell | 8, 10, 12 |
+ | hog_channel | 0, 1, 2, 'ALL' |
+ | spatial_sizes | (8, 8), (10, 10), (12, 12) |
+ | hist_bins | 12, 14, 16 |
+
+After that, I checked out accuracies of all the combinations of those parametes so that, I could get the list of top 10 best combinations. To make this process quick, I reduced dataset to 1,000 cars and 1,000 non-cars. (The results are stored in `tunning_result_**COLOR_SPACE**.p`) As the result -`report.rpt`-, **YCrCb color space showed better performance compares to the others.** 
+
+I did more experiments with all datasets and YCrCb color space for fine-tunning and then it was possible to fix the parameters as shown below :  
+
+ | Parameter | Candidates |
+ | ------ | ----- |
+ | color_space | 'YCrCb' |
+ | orient | 10 |
+ | pix_per_cell | 8 |
+ | hog_channel | 0 |
+ | spatial_sizes | (16, 16) |
+ | hist_bins | 16 |
+
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+I trained [linear SVM](http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html), [SVM with kernel='poly'](http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) and [Decision Trees](http://scikit-learn.org/stable/modules/tree.html) using the dataset comes from [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html) and [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/)
 
+ |  | Linear SVM | SVM(kernal='poly') | DecisionTree |
+ | ------ | ----- | ----- | ----- |
+ | Prediction Time (sec) | 0.00643 | 65.454 | 0.00997 |
+ | Accuracy | 0.9848 | 0.9924 | 0.9398 |
+ 
 ###Sliding Window Search
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
@@ -75,7 +96,6 @@ Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spat
 
 ### Video Implementation
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 Here's a [link to my video result](./project_video.mp4)
 
 
