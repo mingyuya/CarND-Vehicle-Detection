@@ -15,7 +15,7 @@ Steps of this project are the following:
 
 [//]: # (Image References)
 [ex_vehicles]: ./figures/car_images.jpg
-[ex_non-vehicles]: ./examples/notcar_images.jpg
+[ex_non-vehicles]: ./figures/notcar_images.jpg
 [hog_car]: ./figures/hog_car.jpg
 [hog_notcar]: ./figures/hog_notcar.jpg
 [sliding_window]: ./figures/sliding_window.jpg
@@ -24,7 +24,7 @@ Steps of this project are the following:
 [det_2]: ./figures/detection_scale_1p0.jpg
 [det_3]: ./figures/detection_scale_1p2.jpg
 [det_4]: ./figures/detection_scale_1p8.jpg
-[image7]: ./examples/output_bboxes.png
+[label_map]: ./figures/label_map.jpg
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -49,8 +49,8 @@ I then explored different color spaces and different `skimage.hog()` parameters 
 
 Here is an example using the `YCrCb` color space and HOG parameters of `orientations=10`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
-
-![alt text][image2]
+![alt text][hog_car]
+![alt text][hog_notcar]
 
 ### Choice of HOG parameters.
 
@@ -83,42 +83,48 @@ I did more experiments with all datasets and YCrCb color space for fine-tunning 
 
 I trained [linear SVM](http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html), [SVM with kernel='poly'](http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) and [Decision Trees](http://scikit-learn.org/stable/modules/tree.html) using the dataset comes from [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html) and [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/) and chosen parameters for feature extraction. In addition, all the features were scaled to zero mean and unit variance before training.
 
-The following table is its result.  
- |  | Linear SVM | SVM(kernal='poly') | DecisionTree |
+The following table is its result. 
+
+ |  | LinearSVM | SVM (kernal='poly') | DecisionTree |
  | ------ | ----- | ----- | ----- |
  | Prediction Time (sec) | 0.00643 | 65.454 | 0.00997 |
  | Accuracy | 0.9848 | 0.9924 | 0.9398 |
  
 This result shows that **`Linear SVM` is 10,000 times faster than `SVM with kernel='poly'` and has no sigficant difference in accuracy.** 
 
+---
 
 ## Building a pipeline
 
 ### Sliding Window Search
 
-The function `find_car` divides an image into small cells having 8x8 pixels. The window which has 8x8 cells (=64x64 pixels) moves 2 cells at a time in an image with extracting features. Multi-scale window is implented by scaling an input image.
+The function `find_car` divides an image into small cells having 8x8 pixels. The window which has 8x8 cells (=64x64 pixels) moves 2 cells at a time in an image with extracting features. Multi-scale window is implented by scaling an input image. This sub-sampling method operates faster than real sliding-window method.
 
+Here are the scaled images with all the possible windows :  
 ![alt text][sliding_window]
 
-Here is the output of my pipeline with sliding window :  
+The followings are the results of detection for various scaling :  
+![alt text][det_1]
+![alt text][det_2]
+![alt text][det_3]
+![alt text][det_4]
 
-![alt text][image4]
----
 
-#### Reducing false detections
-##### Using `decision_function()` of LinearSVM
+### Reducing false detections
+#### Using `decision_function()` of LinearSVM
  `decision_function()` of LinearSVM returns the distance between an input feature and its hyperplane. The `find_car` function considers positive prediction with short distance to hyperplane (< 1.0) as false.  
  
-##### Averaging last six `heatmap`s
- `find_car` function stores the positions of positive detections - `heatmap` in each frame of the video in the buffer having the depth of 6. By using the buffer, I could take the mean of last six `heatmap`s and remove 
+Here is the output of my pipeline with their corresponding heatmap and labeled map :  
+
+![alt text][output]
+![alt text][label_map]
+
+---
 
 ### Video Implementation
 
-#### Reducing 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
-
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+#### Averaging last six `heatmap`s
+ `find_car` function stores the positions of positive detections - `heatmap` in each frame of the video in the buffer having the depth of 6. By using the buffer, I could take the mean of last six `heatmap`s and remove 
 
 Here's a [link to my video result](./result_project_video.mp4)
 
@@ -127,7 +133,7 @@ Here's a [link to my video result](./result_project_video.mp4)
 ![alt text][image5]
 
 ### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
+![alt text][label_map]
 
 ### Here the resulting bounding boxes are drawn onto the last frame in the series:
 ![alt text][image7]
