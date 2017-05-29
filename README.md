@@ -135,7 +135,7 @@ From the positive detections I created a heatmap and then thresholded that map t
 ### Averaging last six `heatmap`s (Step 3-3 in `Vehicle_Detection.ipynb`)   
  `find_car` function stores the positions of positive detections - `heatmap` in each frame of the video in the buffer having the depth of 6. By using the buffer, I could take the mean of last six `heatmap`s and remove 
 
-Here's a [link to my video result](./result_project_video.mp4) and also available in [Youtube](https://youtu.be/GRfJsx8JJ6E)
+Here's a [link to my video result](./result_project_video.mp4) and also available in [Youtube](https://youtu.be/vX57KumVp8k)
 
 ---
 
